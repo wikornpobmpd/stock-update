@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { FilterBar } from "@/components/dashboard/FilterBar";
 import { StockBadge } from "@/components/dashboard/StockBadge";
@@ -59,7 +58,6 @@ export function StockTable({ initialProducts }: StockTableProps) {
   );
 
   const filtered = useMemo(() => {
-    setPage(1);
     return products.filter((p) => {
       const matchSearch =
         !search ||
@@ -72,6 +70,10 @@ export function StockTable({ initialProducts }: StockTableProps) {
       return matchSearch && matchWarehouse && matchCategory && matchStatus;
     });
   }, [products, search, selectedWarehouse, selectedCategory, selectedStatus]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, selectedWarehouse, selectedCategory, selectedStatus]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -169,16 +171,21 @@ export function StockTable({ initialProducts }: StockTableProps) {
                   <td className="px-4 py-2.5">
                     {product.image_url ? (
                       <div
-                        className="relative h-10 w-10 rounded-xl overflow-hidden"
+                        className="h-10 w-10 rounded-xl overflow-hidden flex-shrink-0"
                         style={{ border: "1.5px solid #F3C4AA" }}
                       >
-                        <Image
+                        <img
                           src={product.image_url}
                           alt={product.name}
-                          fill
-                          className="object-cover"
-                          sizes="40px"
-                          onError={() => {}}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                            (e.target as HTMLImageElement).parentElement!.innerHTML = "🐾";
+                            Object.assign((e.target as HTMLImageElement).parentElement!.style, {
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              background: "#FFF0E6", color: "#F3C4AA", fontSize: "1rem",
+                            });
+                          }}
                         />
                       </div>
                     ) : (

@@ -35,9 +35,9 @@
 
 | Resource    | URL |
 |-------------|-----|
-| Repository  | (GitHub URL — กรอกหลัง push) |
+| Repository  | https://github.com/wikornpobmpd/stock-update |
 | Production  | (Vercel URL — กรอกหลัง deploy) |
-| Supabase    | (Supabase Dashboard URL) |
+| Supabase    | https://supabase.com/dashboard/project/ovpyzkglagcsjwhwpymy |
 
 ## Data Sources
 
