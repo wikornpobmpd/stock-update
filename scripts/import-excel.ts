@@ -18,14 +18,14 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error("❌ กรุณาตั้งค่า NEXT_PUBLIC_SUPABASE_URL และ SUPABASE_SERVICE_ROLE_KEY ใน .env.local");
+if (!SUPABASE_URL || !ANON_KEY) {
+  console.error("❌ กรุณาตั้งค่า NEXT_PUBLIC_SUPABASE_URL และ NEXT_PUBLIC_SUPABASE_ANON_KEY ใน .env.local");
   process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+const supabase = createClient(SUPABASE_URL, ANON_KEY);
 
 const ROOT = path.resolve(__dirname, "..");
 
