@@ -2,23 +2,32 @@ import { createClient } from "@/lib/supabase/server";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { AlertBanner } from "@/components/dashboard/AlertBanner";
 import { StockTable } from "@/components/dashboard/StockTable";
+import { LogoutButton } from "@/components/dashboard/LogoutButton";
 import { type Product, type StockStats, getStockStatus } from "@/lib/types";
 
 export const revalidate = 0;
 
 async function getProducts(): Promise<Product[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("available_qty", { ascending: true })
-    .limit(5000);
+  const all: Product[] = [];
+  const BATCH = 1000;
+  let from = 0;
 
-  if (error) {
-    console.error("Error fetching products:", error);
-    return [];
+  while (true) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("name", { ascending: true })
+      .range(from, from + BATCH - 1);
+
+    if (error) { console.error("getProducts error:", error); break; }
+    if (!data || data.length === 0) break;
+    all.push(...(data as Product[]));
+    if (data.length < BATCH) break;
+    from += BATCH;
   }
-  return data as Product[];
+
+  return all;
 }
 
 function computeStats(products: Product[]): StockStats {
@@ -34,6 +43,9 @@ function computeStats(products: Product[]): StockStats {
 }
 
 export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   const products = await getProducts();
   const stats = computeStats(products);
   const now = new Date().toLocaleDateString("th-TH", {
@@ -81,13 +93,18 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            {/* Date + Realtime indicator */}
-            <div className="hidden sm:flex flex-col items-end gap-1">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-green-300 animate-pulse" />
-                <span className="text-xs text-white/80">อัพเดทอัตโนมัติ</span>
+            {/* User + Logout */}
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex flex-col items-end gap-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-green-300 animate-pulse" />
+                  <span className="text-xs text-white/80">อัพเดทอัตโนมัติ</span>
+                </div>
+                {user && (
+                  <span className="text-xs text-white/60">{user.email}</span>
+                )}
               </div>
-              <span className="text-xs text-white/60">{now}</span>
+              <LogoutButton />
             </div>
           </div>
         </div>
