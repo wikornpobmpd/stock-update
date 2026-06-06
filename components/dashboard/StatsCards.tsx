@@ -1,60 +1,96 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { StockStats } from "@/lib/types";
 
 interface StatsCardsProps {
   stats: StockStats;
 }
 
+const cards = [
+  {
+    key: "total" as const,
+    label: "สินค้าทั้งหมด",
+    icon: "📦",
+    color: "#F36E23",
+    bg: "#FFF0E6",
+    border: "#F3C4AA",
+  },
+  {
+    key: "normal" as const,
+    label: "สต็อกปกติ",
+    icon: "✅",
+    color: "#46C9D5",
+    bg: "#E6F9FB",
+    border: "#A8E8EE",
+  },
+  {
+    key: "low" as const,
+    label: "สต็อกต่ำ",
+    icon: "⚠️",
+    color: "#FF8C42",
+    bg: "#FFF4E8",
+    border: "#FFD4B0",
+  },
+  {
+    key: "out" as const,
+    label: "หมดสต็อก",
+    icon: "🔴",
+    color: "#E84040",
+    bg: "#FFEAEA",
+    border: "#FFBBBB",
+  },
+];
+
 export function StatsCards({ stats }: StatsCardsProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            สินค้าทั้งหมด
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
-          <p className="text-xs text-muted-foreground mt-1">รายการ</p>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card) => {
+        const value = stats[card.key];
+        const pct =
+          card.key !== "total" && stats.total > 0
+            ? Math.round((value / stats.total) * 100)
+            : null;
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">สต็อกปกติ</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-green-600">
-            {stats.normal.toLocaleString()}
+        return (
+          <div
+            key={card.key}
+            className="stat-card rounded-2xl p-5 relative overflow-hidden"
+            style={{
+              background: "#ffffff",
+              border: `1.5px solid ${card.border}`,
+              boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+            }}
+          >
+            {/* colored accent bar top */}
+            <div
+              className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
+              style={{ background: card.color }}
+            />
+
+            {/* icon bubble */}
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3"
+              style={{ background: card.bg }}
+            >
+              {card.icon}
+            </div>
+
+            <p
+              className="text-xs font-semibold uppercase tracking-wide mb-1"
+              style={{ color: card.color, fontFamily: "var(--font-sarabun)" }}
+            >
+              {card.label}
+            </p>
+            <p
+              className="text-3xl font-bold leading-none"
+              style={{ color: card.color, fontFamily: "var(--font-fredoka)" }}
+            >
+              {value.toLocaleString()}
+            </p>
+            {pct !== null && (
+              <p className="text-xs text-gray-400 mt-1">{pct}% ของทั้งหมด</p>
+            )}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {stats.total > 0 ? Math.round((stats.normal / stats.total) * 100) : 0}% ของทั้งหมด
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="border-yellow-200">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-yellow-700">⚠️ สต็อกต่ำ</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-yellow-600">
-            {stats.low.toLocaleString()}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">รายการที่ต้องเติม</p>
-        </CardContent>
-      </Card>
-
-      <Card className="border-red-200">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-red-700">🔴 หมดสต็อก</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-red-600">{stats.out.toLocaleString()}</div>
-          <p className="text-xs text-muted-foreground mt-1">รายการที่หมดแล้ว</p>
-        </CardContent>
-      </Card>
+        );
+      })}
     </div>
   );
 }

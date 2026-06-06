@@ -1,9 +1,24 @@
 import type { Metadata } from "next";
+import { Fredoka, Sarabun } from "next/font/google";
 import "./globals.css";
 
+const fredoka = Fredoka({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-fredoka",
+  display: "swap",
+});
+
+const sarabun = Sarabun({
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sarabun",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Stock Update Dashboard",
-  description: "ระบบจัดการและอัพเดทสินค้าคงคลัง bebeplay",
+  title: "Hosttail Stock Dashboard",
+  description: "ระบบจัดการสินค้าคงคลัง Hosttail by bebeplay",
 };
 
 export default function RootLayout({
@@ -12,8 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th">
-      <body className="min-h-screen bg-gray-50">{children}</body>
+    <html lang="th" className={`${fredoka.variable} ${sarabun.variable}`}>
+      <body className="min-h-screen" style={{ background: "var(--brand-warm)", fontFamily: "var(--font-sarabun)" }}>
+        {children}
+      </body>
     </html>
   );
 }

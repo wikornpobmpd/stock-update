@@ -2,36 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* shadcn/ui CSS vars */
+  --background: 30 50% 99%;
+  --foreground: 20 10% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 10% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 10% 15%;
+  --primary: 24 90% 54%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 185 60% 56%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 30 30% 96%;
+  --muted-foreground: 20 10% 50%;
+  --accent: 30 50% 95%;
+  --accent-foreground: 20 10% 15%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 30 20% 90%;
+  --input: 30 20% 90%;
+  --ring: 24 90% 54%;
+  --radius: 0.75rem;
+
+  /* Hosttail Brand */
+  --brand-orange: #F36E23;
+  --brand-orange-light: #FF8C42;
+  --brand-orange-pale: #FFF0E6;
+  --brand-teal: #46C9D5;
+  --brand-teal-pale: #E6F9FB;
+  --brand-dark: #2D2D2D;
+  --brand-warm: #FFF8F4;
+
+  /* Fonts */
+  --font-fredoka: 'Fredoka', sans-serif;
+  --font-sarabun: 'Sarabun', sans-serif;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+* {
+  @apply border-border;
+}
+
+body {
+  background-color: var(--brand-warm);
+  color: var(--brand-dark);
+  font-family: var(--font-sarabun);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Hosttail H-Pattern (for header) ──────────────────────── */
+.h-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='8' y='44' font-size='42' font-family='Arial Black, sans-serif' font-weight='900' fill='rgba(255,255,255,0.07)' letter-spacing='-2'%3EH%3C/text%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 60px 60px;
+}
+
+/* ── Brand utility classes ──────────────────────────────────── */
+.brand-gradient {
+  background: linear-gradient(135deg, #F36E23 0%, #FF8C42 100%);
+}
+
+.teal-gradient {
+  background: linear-gradient(135deg, #46C9D5 0%, #7DDDE6 100%);
+}
+
+/* ── Card hover animation ───────────────────────────────────── */
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(243, 110, 35, 0.12);
+}
+
+/* ── Table row hover ────────────────────────────────────────── */
+.stock-row {
+  transition: background-color 0.15s ease;
+}
+.stock-row:hover {
+  background-color: #FFF0E6;
+}
+
+/* ── Scrollbar branding ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #FFF8F4; }
+::-webkit-scrollbar-thumb { background: #F3BFAA; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #F36E23; }
+
+/* ── Input focus ─────────────────────────────────────────────── */
+input:focus, select:focus {
+  outline: none;
+  border-color: #F36E23 !important;
+  box-shadow: 0 0 0 3px rgba(243, 110, 35, 0.15) !important;
+}
+
+/* ── Fredoka display headings ─────────────────────────────── */
+h1, h2, h3, .font-display {
+  font-family: var(--font-fredoka);
 }

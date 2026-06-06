@@ -18,7 +18,6 @@ export function StockTable({ initialProducts }: StockTableProps) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  // Supabase Realtime subscription
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
@@ -31,7 +30,9 @@ export function StockTable({ initialProducts }: StockTableProps) {
             setProducts((prev) => [payload.new as Product, ...prev]);
           } else if (payload.eventType === "UPDATE") {
             setProducts((prev) =>
-              prev.map((p) => (p.id === payload.new.id ? (payload.new as Product) : p))
+              prev.map((p) =>
+                p.id === payload.new.id ? (payload.new as Product) : p
+              )
             );
           } else if (payload.eventType === "DELETE") {
             setProducts((prev) => prev.filter((p) => p.id !== payload.old.id));
@@ -40,22 +41,20 @@ export function StockTable({ initialProducts }: StockTableProps) {
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
-  // Unique warehouse and category lists for filters
   const warehouses = useMemo(
-    () => [...new Set(products.map((p) => p.warehouse_name).filter(Boolean))] as string[],
+    () =>
+      [...new Set(products.map((p) => p.warehouse_name).filter(Boolean))] as string[],
     [products]
   );
   const categories = useMemo(
-    () => [...new Set(products.map((p) => p.category).filter(Boolean))] as string[],
+    () =>
+      [...new Set(products.map((p) => p.category).filter(Boolean))] as string[],
     [products]
   );
 
-  // Filtered products
   const filtered = useMemo(() => {
     return products.filter((p) => {
       const matchSearch =
@@ -85,43 +84,83 @@ export function StockTable({ initialProducts }: StockTableProps) {
         onStatusChange={setSelectedStatus}
       />
 
-      <div className="text-sm text-muted-foreground">
-        แสดง {filtered.length.toLocaleString()} จาก {products.length.toLocaleString()} รายการ
+      <div className="flex items-center justify-between">
+        <p className="text-sm" style={{ color: "#888" }}>
+          แสดง{" "}
+          <span className="font-semibold" style={{ color: "#F36E23" }}>
+            {filtered.length.toLocaleString()}
+          </span>{" "}
+          จาก {products.length.toLocaleString()} รายการ
+        </p>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          <span className="text-xs text-gray-400">Realtime</span>
+        </div>
       </div>
 
-      <div className="rounded-md border overflow-x-auto">
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{ border: "1.5px solid #F3C4AA", boxShadow: "0 2px 12px rgba(243,110,35,0.06)" }}
+      >
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-muted/50">
-              <th className="h-10 px-4 text-left font-medium text-muted-foreground w-16">รูป</th>
-              <th className="h-10 px-4 text-left font-medium text-muted-foreground">SKU</th>
-              <th className="h-10 px-4 text-left font-medium text-muted-foreground">ชื่อสินค้า</th>
-              <th className="h-10 px-4 text-left font-medium text-muted-foreground hidden md:table-cell">
+            <tr style={{ background: "#FFF0E6" }}>
+              <th className="h-11 px-4 text-left font-semibold w-14" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
+                รูป
+              </th>
+              <th className="h-11 px-4 text-left font-semibold" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
+                SKU
+              </th>
+              <th className="h-11 px-4 text-left font-semibold" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
+                ชื่อสินค้า
+              </th>
+              <th className="h-11 px-4 text-left font-semibold hidden md:table-cell" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
                 คลัง
               </th>
-              <th className="h-10 px-4 text-right font-medium text-muted-foreground">คงเหลือ</th>
-              <th className="h-10 px-4 text-right font-medium text-muted-foreground hidden sm:table-cell">
+              <th className="h-11 px-4 text-right font-semibold" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
+                คงเหลือ
+              </th>
+              <th className="h-11 px-4 text-right font-semibold hidden sm:table-cell" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
                 MIN
               </th>
-              <th className="h-10 px-4 text-right font-medium text-muted-foreground hidden lg:table-cell">
+              <th className="h-11 px-4 text-right font-semibold hidden lg:table-cell" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
                 ขาย 7วัน
               </th>
-              <th className="h-10 px-4 text-left font-medium text-muted-foreground">สถานะ</th>
+              <th className="h-11 px-4 text-left font-semibold" style={{ color: "#F36E23", fontFamily: "var(--font-fredoka)", fontSize: "0.8rem" }}>
+                สถานะ
+              </th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="h-24 text-center text-muted-foreground">
-                  ไม่พบสินค้าที่ค้นหา
+                <td
+                  colSpan={8}
+                  className="h-32 text-center"
+                  style={{ color: "#F3C4AA" }}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-4xl">🐾</span>
+                    <span className="text-sm">ไม่พบสินค้าที่ค้นหา</span>
+                  </div>
                 </td>
               </tr>
             ) : (
-              filtered.map((product) => (
-                <tr key={product.id} className="border-b hover:bg-muted/30 transition-colors">
-                  <td className="px-4 py-2">
+              filtered.map((product, idx) => (
+                <tr
+                  key={product.id}
+                  className="stock-row border-t"
+                  style={{
+                    borderColor: "#FFE8D6",
+                    background: idx % 2 === 0 ? "#ffffff" : "#FFFAF7",
+                  }}
+                >
+                  <td className="px-4 py-2.5">
                     {product.image_url ? (
-                      <div className="relative h-10 w-10 rounded overflow-hidden bg-gray-100">
+                      <div
+                        className="relative h-10 w-10 rounded-xl overflow-hidden"
+                        style={{ border: "1.5px solid #F3C4AA" }}
+                      >
                         <Image
                           src={product.image_url}
                           alt={product.name}
@@ -132,33 +171,58 @@ export function StockTable({ initialProducts }: StockTableProps) {
                         />
                       </div>
                     ) : (
-                      <div className="h-10 w-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">
-                        —
+                      <div
+                        className="h-10 w-10 rounded-xl flex items-center justify-center text-base"
+                        style={{ background: "#FFF0E6", color: "#F3C4AA" }}
+                      >
+                        🐾
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-2 font-mono text-xs text-muted-foreground">
-                    {product.sku}
+                  <td className="px-4 py-2.5">
+                    <span
+                      className="font-mono text-xs px-2 py-0.5 rounded-lg"
+                      style={{ background: "#FFF0E6", color: "#F36E23" }}
+                    >
+                      {product.sku}
+                    </span>
                   </td>
-                  <td className="px-4 py-2">
-                    <div className="font-medium line-clamp-2 max-w-xs">{product.name}</div>
+                  <td className="px-4 py-2.5">
+                    <div className="font-medium line-clamp-2 max-w-xs text-sm" style={{ color: "#2D2D2D" }}>
+                      {product.name}
+                    </div>
                     {product.brand && (
-                      <div className="text-xs text-muted-foreground">{product.brand}</div>
+                      <div className="text-xs mt-0.5" style={{ color: "#46C9D5" }}>
+                        {product.brand}
+                      </div>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-muted-foreground hidden md:table-cell">
+                  <td className="px-4 py-2.5 text-xs hidden md:table-cell" style={{ color: "#888" }}>
                     {product.warehouse_name || "—"}
                   </td>
-                  <td className="px-4 py-2 text-right font-semibold">
-                    {product.available_qty.toLocaleString()}
+                  <td className="px-4 py-2.5 text-right">
+                    <span
+                      className="font-bold text-base"
+                      style={{
+                        color:
+                          product.available_qty <= 0
+                            ? "#E84040"
+                            : product.available_qty <= product.min_quantity
+                            ? "#F36E23"
+                            : "#46C9D5",
+                        fontFamily: "var(--font-fredoka)",
+                      }}
+                    >
+                      {product.available_qty.toLocaleString()}
+                    </span>
                   </td>
-                  <td className="px-4 py-2 text-right text-muted-foreground hidden sm:table-cell">
+                  <td className="px-4 py-2.5 text-right text-xs hidden sm:table-cell" style={{ color: "#888" }}>
                     {product.min_quantity.toLocaleString()}
                   </td>
-                  <td className="px-4 py-2 text-right text-muted-foreground hidden lg:table-cell">
+                  <td className="px-4 py-2.5 text-right text-xs hidden lg:table-cell" style={{ color: "#888" }}>
                     {product.sales_7d.toLocaleString()}
                   </td>
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2.5">
                     <StockBadge product={product} />
                   </td>
                 </tr>
