@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" fill="#E05A28">
+  <!-- Rabbit (left) -->
+  <!-- Left ear -->
+  <ellipse cx="84" cy="36" rx="10" ry="28" transform="rotate(-8 84 36)"/>
+  <!-- Right ear -->
+  <ellipse cx="108" cy="33" rx="10" ry="28" transform="rotate(8 108 33)"/>
+  <!-- Head -->
+  <ellipse cx="96" cy="76" rx="22" ry="21"/>
+  <!-- Body -->
+  <ellipse cx="96" cy="122" rx="26" ry="34"/>
+  <!-- Left foot -->
+  <ellipse cx="82" cy="150" rx="14" ry="7" transform="rotate(10 82 150)"/>
+  <!-- Right foot -->
+  <ellipse cx="112" cy="150" rx="14" ry="7" transform="rotate(-10 112 150)"/>
+
+  <!-- Cat (middle) -->
+  <!-- Left ear -->
+  <polygon points="163,52 177,74 192,54"/>
+  <!-- Right ear -->
+  <polygon points="196,54 211,74 225,52"/>
+  <!-- Head -->
+  <ellipse cx="193" cy="90" rx="29" ry="27"/>
+  <!-- Body -->
+  <ellipse cx="193" cy="135" rx="30" ry="38"/>
+  <!-- Tail -->
+  <path d="M220,152 Q258,125 250,82 Q247,68 256,60" stroke="#E05A28" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Dog (right, largest) -->
+  <!-- Left ear (floppy) -->
+  <ellipse cx="275" cy="92" rx="14" ry="26" transform="rotate(-22 275 92)"/>
+  <!-- Right ear (floppy) -->
+  <ellipse cx="341" cy="96" rx="14" ry="26" transform="rotate(22 341 96)"/>
+  <!-- Head -->
+  <ellipse cx="308" cy="78" rx="36" ry="32"/>
+  <!-- Body -->
+  <ellipse cx="308" cy="135" rx="43" ry="43"/>
+
+  <!-- Text "HostTail" -->
+  <text x="200" y="207" font-family="'Arial Rounded MT Bold', 'Nunito', 'Varela Round', Arial, sans-serif" font-size="50" font-weight="900" text-anchor="middle" fill="#E05A28">HostTail</text>
+</svg>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { AlertBanner } from "@/components/dashboard/AlertBanner";
@@ -68,22 +69,18 @@ export default async function DashboardPage() {
             {/* Logo + Title */}
             <div className="flex items-center gap-3">
               <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center text-2xl shadow-lg"
-                style={{ background: "rgba(255,255,255,0.2)" }}
+                className="rounded-2xl flex items-center justify-center shadow-lg overflow-hidden"
+                style={{ background: "rgba(255,255,255,0.95)", padding: "6px 10px" }}
               >
-                🐾
+                <Image
+                  src="/hosttail-logo.svg"
+                  alt="Hosttail Logo"
+                  width={110}
+                  height={60}
+                  priority
+                />
               </div>
               <div>
-                <h1
-                  className="text-white font-bold leading-none"
-                  style={{
-                    fontFamily: "var(--font-fredoka)",
-                    fontSize: "1.5rem",
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  Hosttail Stock
-                </h1>
                 <p
                   className="text-xs mt-0.5"
                   style={{ color: "rgba(255,255,255,0.75)" }}
