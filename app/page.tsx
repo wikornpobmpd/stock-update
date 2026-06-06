@@ -11,7 +11,8 @@ async function getProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select("*")
-    .order("available_qty", { ascending: true });
+    .order("available_qty", { ascending: true })
+    .limit(5000);
 
   if (error) {
     console.error("Error fetching products:", error);

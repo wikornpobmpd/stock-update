@@ -7,6 +7,8 @@ import { FilterBar } from "@/components/dashboard/FilterBar";
 import { StockBadge } from "@/components/dashboard/StockBadge";
 import { type Product, getStockStatus, type StockStatus } from "@/lib/types";
 
+const PAGE_SIZE = 100;
+
 interface StockTableProps {
   initialProducts: Product[];
 }
@@ -17,6 +19,7 @@ export function StockTable({ initialProducts }: StockTableProps) {
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,6 +59,7 @@ export function StockTable({ initialProducts }: StockTableProps) {
   );
 
   const filtered = useMemo(() => {
+    setPage(1);
     return products.filter((p) => {
       const matchSearch =
         !search ||
@@ -68,6 +72,9 @@ export function StockTable({ initialProducts }: StockTableProps) {
       return matchSearch && matchWarehouse && matchCategory && matchStatus;
     });
   }, [products, search, selectedWarehouse, selectedCategory, selectedStatus]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="space-y-4">
@@ -88,9 +95,13 @@ export function StockTable({ initialProducts }: StockTableProps) {
         <p className="text-sm" style={{ color: "#888" }}>
           แสดง{" "}
           <span className="font-semibold" style={{ color: "#F36E23" }}>
+            {((page - 1) * PAGE_SIZE + 1).toLocaleString()}–{Math.min(page * PAGE_SIZE, filtered.length).toLocaleString()}
+          </span>{" "}
+          จาก{" "}
+          <span className="font-semibold" style={{ color: "#F36E23" }}>
             {filtered.length.toLocaleString()}
           </span>{" "}
-          จาก {products.length.toLocaleString()} รายการ
+          รายการ
         </p>
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -146,7 +157,7 @@ export function StockTable({ initialProducts }: StockTableProps) {
                 </td>
               </tr>
             ) : (
-              filtered.map((product, idx) => (
+              paginated.map((product, idx) => (
                 <tr
                   key={product.id}
                   className="stock-row border-t"
@@ -231,6 +242,75 @@ export function StockTable({ initialProducts }: StockTableProps) {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <span className="text-xs" style={{ color: "#888" }}>
+            หน้า {page} / {totalPages}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="h-8 px-3 rounded-lg text-xs font-medium transition-all disabled:opacity-40"
+              style={{
+                background: page === 1 ? "#F5F5F5" : "#FFF0E6",
+                color: page === 1 ? "#aaa" : "#F36E23",
+                border: "1.5px solid",
+                borderColor: page === 1 ? "#eee" : "#F3C4AA",
+              }}
+            >
+              ← ก่อนหน้า
+            </button>
+
+            {/* page number pills */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                let p: number;
+                if (totalPages <= 7) {
+                  p = i + 1;
+                } else if (page <= 4) {
+                  p = i + 1;
+                } else if (page >= totalPages - 3) {
+                  p = totalPages - 6 + i;
+                } else {
+                  p = page - 3 + i;
+                }
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className="h-8 w-8 rounded-lg text-xs font-medium transition-all"
+                    style={{
+                      background: p === page ? "#F36E23" : "#FFF0E6",
+                      color: p === page ? "#fff" : "#F36E23",
+                      border: "1.5px solid",
+                      borderColor: p === page ? "#F36E23" : "#F3C4AA",
+                    }}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="h-8 px-3 rounded-lg text-xs font-medium transition-all disabled:opacity-40"
+              style={{
+                background: page === totalPages ? "#F5F5F5" : "#FFF0E6",
+                color: page === totalPages ? "#aaa" : "#F36E23",
+                border: "1.5px solid",
+                borderColor: page === totalPages ? "#eee" : "#F3C4AA",
+              }}
+            >
+              ถัดไป →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
