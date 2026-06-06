@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(git:*)",
+      "Bash(node:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"c:\\Claude Ai\\Claude workshop\\Inventory_master\" && npx tsc --noEmit 2>&1 | tail -5"
+          }
+        ]
+      }
+    ]
+  }
+}
